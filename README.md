@@ -1,4 +1,4 @@
-<center><h1>Zing_it</h1> </center>
+<center> <h1>Zing_it</h1> </center>
 
 ## Description
 
@@ -17,7 +17,7 @@ The app is built using a modern stack with real-time WebSocket communication.
 ## Project Structure
 
 - **Frontend**: React.js, TailwindCSS
-- **Backend**: Node.js, Express, Socket.io
+- **Backend**: Node.js, Socket.io
 - **Database**: MongoDB
 - **Real-time Communication**: Socket.io
 
