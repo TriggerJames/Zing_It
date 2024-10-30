@@ -1,40 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import io from 'socket.io-client';
+// src/App.js
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import Landing from './Landing';
+import Home from './Home';
+import Chat from './Chat';
+import AppContext from './AppContext';
+import Header from './Header'; // Import the Header component
 
-const socket = io('http://localhost:5000');
+const App = () => {
+    const [isDarkMode, setIsDarkMode] = useState(false);
 
-function App() {
-    const [message, setMessage] = useState('');
-    const [messages, setMessages] = useState([]);
-
-    useEffect(() => {
-        socket.on('receiveMessage', (msg) => {
-            setMessages((prevMessages) => [...prevMessages, msg]);
-        });
-    }, []);
-
-    const sendMessage = () => {
-        socket.emit('sendMessage', message);
-        setMessage('');
+    const toggleDarkMode = () => {
+        setIsDarkMode(!isDarkMode);
     };
 
     return (
-        <div>
-            <h1>Zing_it Chat</h1>
-            <div>
-                {messages.map((msg, index) => (
-                    <div key={index}>{msg}</div>
-                ))}
-            </div>
-            <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type a message"
-            />
-            <button onClick={sendMessage}>Send</button>
-        </div>
+        <AppContext.Provider value={{ isDarkMode, toggleDarkMode }}>
+            <Router>
+                <div className={isDarkMode ? 'dark-mode' : 'light-mode'}>
+                    <Header /> {/* Include the Header component */}
+                    <Routes>
+                        <Route path="/" element={<Landing />} />
+                        <Route path="/home" element={<Home />} />
+                        <Route path="/chat" element={<Chat />} />
+                    </Routes>
+                </div>
+            </Router>
+        </AppContext.Provider>
     );
-}
+};
 
 export default App;
