@@ -1,8 +1,6 @@
-// src/components/LoginPage.js
+// src/pages/LoginPage.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../config/firebase-config';  // Update the import path
 import '../assets/css/LoginPage.css';
 
 function LoginPage() {
@@ -18,10 +16,12 @@ function LoginPage() {
     setIsLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate('/chat'); // Redirect to chat page after successful login
+      // Implement your own login logic here
+      console.log('Login attempt with:', { email, password });
+      // On successful login:
+      navigate('/chat');
     } catch (error) {
-      setError(error.message);
+      setError('Failed to login. Please check your credentials.');
     } finally {
       setIsLoading(false);
     }

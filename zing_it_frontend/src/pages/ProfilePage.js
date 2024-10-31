@@ -1,9 +1,5 @@
-// src/components/ProfilePage.js
+// src/pages/ProfilePage.js
 import React, { useState, useEffect } from 'react';
-import { auth, storage, db } from '../config/firebase-config';  // Update the import path
-import { updateProfile } from 'firebase/auth';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import '../assets/css/ProfilePage.css';
 
 function ProfilePage() {
@@ -28,21 +24,18 @@ function ProfilePage() {
 
   const loadUserProfile = async () => {
     try {
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const userDoc = await getDoc(doc(db, 'users', user.uid));
-      const userData = userDoc.data() || {};
-
-      setProfileData({
-        displayName: user.displayName || '',
-        email: user.email || '',
-        photoURL: user.photoURL || '',
-        bio: userData.bio || '',
-        theme: userData.theme || 'light',
-        notifications: userData.notifications !== false,
-        language: userData.language || 'en'
-      });
+      // Implement your own profile loading logic here
+      // For now, we'll use mock data
+      const mockUser = {
+        displayName: 'John Doe',
+        email: 'john@example.com',
+        photoURL: '/default-avatar.png',
+        bio: 'Hello, I am John!',
+        theme: 'light',
+        notifications: true,
+        language: 'en'
+      };
+      setProfileData(mockUser);
     } catch (err) {
       setError('Failed to load profile data');
       console.error(err);
@@ -58,14 +51,6 @@ function ProfilePage() {
     }
   };
 
-  const uploadProfileImage = async () => {
-    if (!newProfileImage) return null;
-
-    const storageRef = ref(storage, `profile-images/${auth.currentUser.uid}`);
-    await uploadBytes(storageRef, newProfileImage);
-    return getDownloadURL(storageRef);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -73,29 +58,13 @@ function ProfilePage() {
     setSuccess('');
 
     try {
-      const user = auth.currentUser;
-      if (!user) throw new Error('No user logged in');
-
-      let photoURL = profileData.photoURL;
-      if (newProfileImage) {
-        photoURL = await uploadProfileImage();
-      }
-
-      // Update auth profile
-      await updateProfile(user, {
-        displayName: profileData.displayName,
-        photoURL
-      });
-
-      // Update user document in Firestore
-      await updateDoc(doc(db, 'users', user.uid), {
-        bio: profileData.bio,
-        theme: profileData.theme,
-        notifications: profileData.notifications,
-        language: profileData.language,
-        updatedAt: new Date()
-      });
-
+      // Implement your own profile update logic here
+      console.log('Updating profile with:', profileData);
+      console.log('New profile image:', newProfileImage);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       setSuccess('Profile updated successfully');
       setIsEditing(false);
       setNewProfileImage(null);

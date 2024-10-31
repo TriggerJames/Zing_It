@@ -1,4 +1,4 @@
-// src/components/Home.js
+// src/pages/Home.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../assets/css/Home.css';
@@ -8,14 +8,12 @@ function Home({ isDarkMode }) {
   const [roomId, setRoomId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
   const handleJoinChat = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-    setSuccess('');
 
     try {
       // Validate inputs
@@ -23,13 +21,7 @@ function Home({ isDarkMode }) {
         throw new Error('Username and Room ID are required');
       }
 
-      // Show success message
-      setSuccess('Joining chat room...');
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Navigate to chat room
+      // Navigate to chat room with query parameters
       navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(roomId)}`);
     } catch (err) {
       setError(err.message);
@@ -48,45 +40,15 @@ function Home({ isDarkMode }) {
         </p>
       </section>
 
-      {/* Features Section */}
-      <section className="features-section">
-        <div className="feature-card">
-          <div className="feature-icon">💬</div>
-          <h2 className="feature-title">Real-time Chat</h2>
-          <p className="feature-description">
-            Experience seamless real-time communication with instant message delivery.
-          </p>
-        </div>
-
-        <div className="feature-card">
-          <div className="feature-icon">🔒</div>
-          <h2 className="feature-title">Secure Rooms</h2>
-          <p className="feature-description">
-            Join private chat rooms with unique IDs for secure conversations.
-          </p>
-        </div>
-
-        <div className="feature-card">
-          <div className="feature-icon">👥</div>
-          <h2 className="feature-title">Group Chat</h2>
-          <p className="feature-description">
-            Create or join group conversations with multiple participants.
-          </p>
-        </div>
-      </section>
-
       {/* Join Chat Section */}
       <section className="join-section">
         <h2 className="join-title">Join a Chat Room</h2>
         
         {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">{success}</div>}
         
         <form onSubmit={handleJoinChat} className="join-form">
           <div className="form-group">
-            <label htmlFor="username" className="form-label">
-              Username
-            </label>
+            <label htmlFor="username">Username</label>
             <input
               type="text"
               id="username"
@@ -94,15 +56,12 @@ function Home({ isDarkMode }) {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Enter your username"
-              disabled={isLoading}
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="roomId" className="form-label">
-              Room ID
-            </label>
+            <label htmlFor="roomId">Room ID</label>
             <input
               type="text"
               id="roomId"
@@ -110,7 +69,6 @@ function Home({ isDarkMode }) {
               value={roomId}
               onChange={(e) => setRoomId(e.target.value)}
               placeholder="Enter room ID"
-              disabled={isLoading}
               required
             />
           </div>
@@ -120,18 +78,13 @@ function Home({ isDarkMode }) {
             className="join-button"
             disabled={isLoading}
           >
-            {isLoading ? (
-              <div className="loading-spinner" />
-            ) : (
-              'Join Chat'
-            )}
+            {isLoading ? 'Joining...' : 'Join Chat'}
           </button>
         </form>
       </section>
 
       {/* Quick Start Guide */}
       <section className="feature-card" style={{ marginTop: '2rem' }}>
-        <div className="feature-icon">📝</div>
         <h2 className="feature-title">Quick Start Guide</h2>
         <p className="feature-description">
           1. Enter your preferred username<br />
