@@ -1,6 +1,6 @@
 // src/components/ProfilePage.js
 import React, { useState, useEffect } from 'react';
-import { auth, storage, db } from '../firebase-config';
+import { auth, storage, db } from '../config/firebase-config';  // Update the import path
 import { updateProfile } from 'firebase/auth';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';

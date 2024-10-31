@@ -1,9 +1,10 @@
 // src/components/RegisterPage.js
+
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { auth, db } from '../firebase-config';
+import { auth, db } from '../config/firebase-config';  // Update the import path
 import '../assets/css/RegisterPage.css';
 
 function RegisterPage() {

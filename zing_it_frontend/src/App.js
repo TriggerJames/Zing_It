@@ -1,6 +1,8 @@
+// src/App.js
+
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { auth } from './firebase-config';
+import { auth } from './config/firebase-config';  // Update this line
 import { onAuthStateChanged } from 'firebase/auth';
 import { ThemeProvider } from './contexts/ThemeContext';
 
@@ -10,16 +12,12 @@ import Footer from './components/Footer';
 import LoadingSpinner from './components/LoadingSpinner';
 
 // Pages
-import HomePage from './pages/HomePage';
 import ChatPage from './pages/ChatPage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ProfilePage from './pages/ProfilePage';
-import AboutPage from './pages/AboutPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
-import ContactPage from './pages/ContactPage';
-import NotFoundPage from './pages/NotFoundPage';
 
 // Styles
 import './assets/css/App.css';
@@ -79,17 +77,15 @@ function App() {
           <main className="main-content">
             <Routes>
               {/* Public Routes */}
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<Navigate to="/chat" />} />
               <Route path="/login" element={
                 user ? <Navigate to="/chat" /> : <LoginPage />
               } />
               <Route path="/register" element={
                 user ? <Navigate to="/chat" /> : <RegisterPage />
               } />
-              <Route path="/about" element={<AboutPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/terms" element={<TermsPage />} />
-              <Route path="/contact" element={<ContactPage />} />
 
               {/* Protected Routes */}
               <Route path="/chat" element={
@@ -103,8 +99,8 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              {/* 404 Route */}
-              <Route path="*" element={<NotFoundPage />} />
+              {/* Catch-all Route */}
+              <Route path="*" element={<Navigate to="/chat" />} />
             </Routes>
           </main>
 
