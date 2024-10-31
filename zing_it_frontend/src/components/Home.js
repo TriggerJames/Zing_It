@@ -1,61 +1,147 @@
 // src/components/Home.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../assets/css/Home.css';
 
-const Home = () => {
-  const [name, setName] = useState('');
-  const [room, setRoom] = useState('');
+function Home({ isDarkMode }) {
+  const [username, setUsername] = useState('');
+  const [roomId, setRoomId] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleJoinChat = async (e) => {
     e.preventDefault();
-    if (name && room) {
-      navigate(`/chat?name=${encodeURIComponent(name)}&room=${encodeURIComponent(room)}`);
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Validate inputs
+      if (!username.trim() || !roomId.trim()) {
+        throw new Error('Username and Room ID are required');
+      }
+
+      // Show success message
+      setSuccess('Joining chat room...');
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Navigate to chat room
+      navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(roomId)}`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold mb-6 text-center text-indigo-600">Welcome to Zing_it</h1>
-      <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-        <p className="text-lg mb-4">Zing_it is a real-time chat application that allows you to communicate with others instantly.</p>
-        <ul className="list-disc pl-5 mb-4">
-          <li>Join different chat rooms based on your interests</li>
-          <li>Send and receive messages in real-time</li>
-          <li>Enjoy a user-friendly interface with dark mode support</li>
-          <li>Connect with people from around the world</li>
-        </ul>
-      </div>
-      <div className="bg-gray-100 shadow-md rounded-lg p-6">
-        <h2 className="text-2xl font-semibold mb-4">Join a Chat Room</h2>
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
+    <div className={`home-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      {/* Hero Section */}
+      <section className="hero-section">
+        <h1 className="hero-title">Welcome to Zing_it Chat</h1>
+        <p className="hero-subtitle">
+          Connect with friends and colleagues in real-time through our secure and intuitive chat platform.
+        </p>
+      </section>
+
+      {/* Features Section */}
+      <section className="features-section">
+        <div className="feature-card">
+          <div className="feature-icon">💬</div>
+          <h2 className="feature-title">Real-time Chat</h2>
+          <p className="feature-description">
+            Experience seamless real-time communication with instant message delivery.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <div className="feature-icon">🔒</div>
+          <h2 className="feature-title">Secure Rooms</h2>
+          <p className="feature-description">
+            Join private chat rooms with unique IDs for secure conversations.
+          </p>
+        </div>
+
+        <div className="feature-card">
+          <div className="feature-icon">👥</div>
+          <h2 className="feature-title">Group Chat</h2>
+          <p className="feature-description">
+            Create or join group conversations with multiple participants.
+          </p>
+        </div>
+      </section>
+
+      {/* Join Chat Section */}
+      <section className="join-section">
+        <h2 className="join-title">Join a Chat Room</h2>
+        
+        {error && <div className="error-message">{error}</div>}
+        {success && <div className="success-message">{success}</div>}
+        
+        <form onSubmit={handleJoinChat} className="join-form">
+          <div className="form-group">
+            <label htmlFor="username" className="form-label">
+              Username
+            </label>
             <input
               type="text"
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              id="username"
+              className="form-input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Enter your username"
+              disabled={isLoading}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="room" className="block text-sm font-medium text-gray-700">Room:</label>
+
+          <div className="form-group">
+            <label htmlFor="roomId" className="form-label">
+              Room ID
+            </label>
             <input
               type="text"
-              id="room"
-              value={room}
-              onChange={(e) => setRoom(e.target.value)}
+              id="roomId"
+              className="form-input"
+              value={roomId}
+              onChange={(e) => setRoomId(e.target.value)}
+              placeholder="Enter room ID"
+              disabled={isLoading}
               required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
             />
           </div>
-          <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Join Chat</button>
+
+          <button
+            type="submit"
+            className="join-button"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <div className="loading-spinner" />
+            ) : (
+              'Join Chat'
+            )}
+          </button>
         </form>
-      </div>
+      </section>
+
+      {/* Quick Start Guide */}
+      <section className="feature-card" style={{ marginTop: '2rem' }}>
+        <div className="feature-icon">📝</div>
+        <h2 className="feature-title">Quick Start Guide</h2>
+        <p className="feature-description">
+          1. Enter your preferred username<br />
+          2. Create or enter an existing room ID<br />
+          3. Click "Join Chat" to start chatting<br />
+          4. Share the room ID with others to chat together
+        </p>
+      </section>
     </div>
   );
-};
+}
 
 export default Home;

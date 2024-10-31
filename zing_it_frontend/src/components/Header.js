@@ -1,23 +1,55 @@
 // src/components/Header.js
 import React from 'react';
 import { Link } from 'react-router-dom';
+import '../assets/css/Header.css';
 
 function Header({ toggleDarkMode, isDarkMode }) {
   return (
-    <header className="bg-indigo-600 text-white p-4">
-      <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold">
-          Zing_it
+    <header className={`header ${isDarkMode ? 'dark' : ''}`}>
+      <div className="header-content">
+        <Link to="/" className="logo">
+          <div className="logo-container">
+            <span className="logo-text">Zing_it</span>
+          </div>
         </Link>
-        <nav>
-          <ul className="flex space-x-4">
-            <li><Link to="/" className="hover:text-indigo-200">Home</Link></li>
-            <li><Link to="/chat" className="hover:text-indigo-200">Chat</Link></li>
+
+        <nav className="nav-menu">
+          <ul className="nav-links">
+            <li>
+              <Link to="/" className="nav-link">
+                <span className="nav-icon">🏠</span>
+                <span className="nav-text">Home</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/chat" className="nav-link">
+                <span className="nav-icon">💭</span>
+                <span className="nav-text">Chat</span>
+              </Link>
+            </li>
+            <li>
+              <Link to="/profile" className="nav-link">
+                <span className="nav-icon">👤</span>
+                <span className="nav-text">Profile</span>
+              </Link>
+            </li>
           </ul>
         </nav>
-        <button onClick={toggleDarkMode} className="bg-indigo-500 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">
-          {isDarkMode ? 'Light Mode' : 'Dark Mode'}
-        </button>
+
+        <div className="header-actions">
+          <button 
+            onClick={toggleDarkMode} 
+            className="dark-mode-toggle"
+            aria-label={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            <span className="mode-icon">
+              {isDarkMode ? '☀️' : '🌙'}
+            </span>
+            <span className="mode-text">
+              {isDarkMode ? 'Light Mode' : 'Dark Mode'}
+            </span>
+          </button>
+        </div>
       </div>
     </header>
   );

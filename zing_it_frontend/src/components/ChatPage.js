@@ -1,102 +1,162 @@
 // src/components/ChatPage.js
-import React, { useState, useEffect, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import io from 'socket.io-client';
+import '../assets/css/ChatPage.css';
 
-const PRESET_ROOMS = [
-  { id: 1, name: 'General', description: 'General discussion' },
-  { id: 2, name: 'Technology', description: 'Tech talks' },
-  { id: 3, name: 'Gaming', description: 'Gaming discussions' },
-  { id: 4, name: 'Music', description: 'Music lovers' },
-  { id: 5, name: 'Movies', description: 'Movie discussions' }
-];
-
-const ChatPage = () => {
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState('');
-  const [activeRoom, setActiveRoom] = useState(null);
+function ChatPage({ isDarkMode }) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [socket, setSocket] = useState(null);
+  const [message, setMessage] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [onlineUsers, setOnlineUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const messagesEndRef = useRef(null);
   
-  const params = useMemo(() => new URLSearchParams(location.search), [location.search]);
-  const username = useMemo(() => params.get('name'), [params]);
+  // Get username and roomId from URL parameters
+  const params = new URLSearchParams(location.search);
+  const username = params.get('username');
+  const roomId = params.get('roomId');
+
+  // Scroll to bottom of messages
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   useEffect(() => {
-    const roomFromUrl = params.get('room');
-    const initialRoom = PRESET_ROOMS.find(r => 
-      r.name.toLowerCase() === (roomFromUrl || '').toLowerCase()
-    ) || PRESET_ROOMS[0];
-    setActiveRoom(initialRoom);
-  }, [params]);
+    // Redirect if no username or roomId
+    if (!username || !roomId) {
+      navigate('/');
+      return;
+    }
 
-  const sendMessage = (e) => {
+    // Connect to socket server
+    const newSocket = io('http://localhost:5000', {
+      query: { username, roomId }
+    });
+
+    setSocket(newSocket);
+
+    // Socket event listeners
+    newSocket.on('connect', () => {
+      console.log('Connected to server');
+      setIsLoading(false);
+    });
+
+    newSocket.on('message', (message) => {
+      setMessages((prevMessages) => [...prevMessages, message]);
+      scrollToBottom();
+    });
+
+    newSocket.on('updateUsers', (users) => {
+      setOnlineUsers(users);
+    });
+
+    // Cleanup on unmount
+    return () => {
+      newSocket.close();
+    };
+  }, [username, roomId, navigate]);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (message.trim() && activeRoom) {
-      const newMessage = {
-        id: Date.now(),
-        user: username,
-        text: message,
-        room: activeRoom.id,
+    if (message.trim() && socket) {
+      const messageData = {
+        content: message,
+        sender: username,
         timestamp: new Date().toISOString(),
+        roomId: roomId
       };
-      setMessages([...messages, newMessage]);
+
+      socket.emit('message', messageData);
       setMessage('');
     }
   };
 
-  const changeRoom = (room) => {
-    setActiveRoom(room);
+  const formatTime = (timestamp) => {
+    return new Date(timestamp).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex">
-        <div className="w-1/4 pr-4">
-          <h3 className="text-xl font-semibold mb-4">Available Rooms</h3>
-          {PRESET_ROOMS.map(room => (
-            <div
-              key={room.id}
-              className={`p-3 mb- 2 rounded-lg ${activeRoom?.id === room.id ? 'bg-indigo-500 text-white' : 'bg-gray-100'}`}
-              onClick={() => changeRoom(room)}
-            >
-              <h4 className="text-lg">{room.name}</h4>
-              <small>{room.description}</small>
-            </div>
-          ))}
+    <div className={`chat-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      {/* Sidebar */}
+      <aside className="chat-sidebar">
+        <div className="room-info">
+          <h2 className="room-title">Chat Room</h2>
+          <p className="room-id">Room ID: {roomId}</p>
         </div>
 
-        <div className="w-3/4 pl-4">
-          <div className="bg-white shadow-md rounded-lg p-6 mb-8">
-            <h2 className="text-2xl font-bold mb-4">{activeRoom?.name}</h2>
-            <p className="text-lg mb-4">Welcome, {username}</p>
-            <div className="flex flex-wrap">
-              {messages
-                .filter(msg => msg.room === activeRoom?.id)
-                .map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`w-full mb-4 p-4 rounded-lg ${msg.user === username ? 'bg-indigo-500 text-white' : 'bg-gray-100'}`}
-                  >
-                    <strong>{msg.user}</strong>
-                    <span>{msg.text}</span>
-                  </div>
-                ))}
-            </div>
+        <div className="online-users">
+          <h3 className="online-users-title">Online Users ({onlineUsers.length})</h3>
+          <ul className="users-list">
+            {onlineUsers.map((user, index) => (
+              <li key={index} className="user-item">
+                <span className="user-status"></span>
+                <span className="user-name">{user}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </aside>
+
+      {/* Main Chat Area */}
+      <main className="chat-main">
+        {isLoading ? (
+          <div className="loading-messages">
+            <div className="loading-spinner"></div>
           </div>
+        ) : (
+          <>
+            <div className="messages-container">
+              {messages.map((msg, index) => (
+                <div
+                  key={index}
+                  className={`message ${msg.sender === username ? 'message-self' : 'message-other'}`}
+                >
+                  <div className="message-info">
+                    <span className="message-sender">
+                      {msg.sender === username ? 'You' : msg.sender}
+                    </span>
+                    <span className="message-time">{formatTime(msg.timestamp)}</span>
+                  </div>
+                  <div className="message-content">{msg.content}</div>
+                </div>
+              ))}
+              <div ref={messagesEndRef} />
+            </div>
 
-          <form onSubmit={sendMessage}>
-            <input
-              type="text"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              required
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-              placeholder="Type a message..."
-            />
-            <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50">Send</button>
-          </form>
-        </div>
-      </div>
+            <div className="message-input-container">
+              <form onSubmit={handleSubmit} className="message-form">
+                <textarea
+                  className="message-input"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSubmit(e);
+                    }
+                  }}
+                />
+                <button
+                  type="submit"
+                  className="send-button"
+                  disabled={!message.trim()}
+                >
+                  Send
+                </button>
+              </form>
+            </div>
+          </>
+        )}
+      </main>
     </div>
   );
-};
+}
 
 export default ChatPage;
