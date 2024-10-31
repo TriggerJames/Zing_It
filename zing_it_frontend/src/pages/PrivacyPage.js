@@ -1,4 +1,4 @@
-// src/components/PrivacyPage.js
+// src/pages/PrivacyPage.js
 import React from 'react';
 import '../assets/css/PrivacyPage.css';
 
@@ -20,56 +20,31 @@ function PrivacyPage() {
           <h2>2. How We Use Your Information</h2>
           <p>
             We use the information we collect to provide, maintain, and improve our Services, to develop new ones, 
-            and to protect Zing_it and our users. We also use this information to offer you tailored content and 
-            to improve the overall user experience.
+            and to protect Zing_it and our users.
           </p>
         </section>
 
         <section>
           <h2>3. Information Sharing and Disclosure</h2>
           <p>
-            We do not share, sell, rent, or trade your personal information with third parties for their commercial purposes. 
-            We may share information in the following circumstances:
-          </p>
-          <ul>
-            <li>With your consent</li>
-            <li>For legal reasons</li>
-            <li>To protect the rights and safety of our users and third parties, as well as our own</li>
-          </ul>
-        </section>
-
-        <section>
-          <h2>4. Data Security</h2>
-          <p>
-            We use reasonable security measures to protect against unauthorized access, alteration, disclosure, 
-            or destruction of your personal information. However, no method of transmission over the Internet or 
-            electronic storage is 100% secure, and we cannot guarantee absolute security.
+            We  may share your information with third-party service providers, such as payment processors, 
+            data analytics providers, and marketing partners.
           </p>
         </section>
 
         <section>
-          <h2>5. Your Choices</h2>
+          <h2>4. Security</h2>
           <p>
-            You may update, correct, or delete your account information at any time by logging into your account 
-            or contacting us. You may also opt out of receiving promotional communications from us by following 
-            the instructions in those communications.
+            We take reasonable measures to protect the information we collect from loss, theft, misuse, 
+            unauthorized access, disclosure, alteration, and destruction.
           </p>
         </section>
 
         <section>
-          <h2>6. Changes to This Policy</h2>
+          <h2>5. Changes to This Policy</h2>
           <p>
-            We may change this privacy policy from time to time. If we make changes, we will notify you by revising 
-            the date at the top of the policy and, in some cases, we may provide you with additional notice.
-          </p>
-        </section>
-
-        <section>
-          <h2>7. Contact Us</h2>
-          <p>
-            If you have any questions about this privacy policy, please contact us at:
-            <br />
-            <a href="mailto:privacy@zingit.com">privacy@zingit.com</a>
+            We may modify this Policy at any time, and we will notify you of any changes by posting the 
+            revised Policy on this page.
           </p>
         </section>
       </div>

@@ -1,6 +1,5 @@
 // src/pages/ChatPage.js
-
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { PRESET_ROOMS } from '../config/rooms';
@@ -10,123 +9,81 @@ function ChatPage({ isDarkMode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const [socket, setSocket] = useState(null);
-  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [currentRoom, setCurrentRoom] = useState(null);
+  const [newMessage, setNewMessage] = useState('');
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showRoomModal, setShowRoomModal] = useState(false);
-  const [roomPassword, setRoomPassword] = useState('');
   const messagesEndRef = useRef(null);
-  
-  // Get username and roomId from URL parameters
-  const params = new URLSearchParams(location.search);
-  const username = params.get('username');
-  const roomId = params.get('roomId');
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Find current room details
-  const currentRoom = PRESET_ROOMS.find(room => room.id.toString() === roomId) || {
-    name: 'Custom Room',
-    description: 'User created room'
-  };
-
-  // Scroll to bottom of messages
+  // Auto scroll to bottom of messages
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const connectToRoom = useCallback((newRoomId) => {
-    const newSocket = io('http://localhost:5000', {
-      query: { username, roomId: newRoomId }
-    });
-
-    setSocket(newSocket);
-    setMessages([]); // Clear messages when changing rooms
-  }, [username]);
-
-  const handleRoomChange = (selectedRoom) => {
-    if (selectedRoom.isPrivate) {
-      setShowRoomModal(true);
-      return;
-    }
-    
-    // Navigate to the new room
-    navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(selectedRoom.id)}`);
-    
-    // Reconnect socket for new room
-    if (socket) {
-      socket.disconnect();
-      connectToRoom(selectedRoom.id);
-    }
-  };
-
-  const handlePasswordSubmit = (e, selectedRoom) => {
-    e.preventDefault();
-    if (roomPassword === selectedRoom.password) {
-      setShowRoomModal(false);
-      setRoomPassword('');
-      navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(selectedRoom.id)}`);
-      
-      if (socket) {
-        socket.disconnect();
-        connectToRoom(selectedRoom.id);
-      }
-    } else {
-      alert('Incorrect password');
-    }
-  };
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const username = params.get('username');
+    const roomId = params.get('roomId');
+
     if (!username || !roomId) {
       navigate('/');
       return;
     }
 
-    connectToRoom(roomId);
+    const room = PRESET_ROOMS.find(r => r.id.toString() === roomId);
+    if (!room) {
+      navigate('/');
+      return;
+    }
 
-    return () => {
-      if (socket) {
-        socket.disconnect();
-      }
-    };
-  }, [username, roomId, navigate, connectToRoom, socket]);
+    setCurrentRoom(room);
 
-  useEffect(() => {
-    if (!socket) return;
+    const newSocket = io('http://localhost:5000', {
+      query: { username, roomId }
+    });
 
-    socket.on('connect', () => {
-      console.log('Connected to server');
+    setSocket(newSocket);
+
+    newSocket.on('connect', () => {
       setIsLoading(false);
     });
 
-    socket.on('message', (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
-      scrollToBottom();
+    newSocket.on('message', (message) => {
+      setMessages(prevMessages => [...prevMessages, message]);
     });
 
-    socket.on('updateUsers', (users) => {
+    newSocket.on('updateUsers', (users) => {
       setOnlineUsers(users);
     });
 
     return () => {
-      socket.off('connect');
-      socket.off('message');
-      socket.off('updateUsers');
+      newSocket.disconnect();
     };
-  }, [socket]);
+  }, [location, navigate]);
 
-  const handleSubmit = (e) => {
+  const handleSendMessage = (e) => {
     e.preventDefault();
-    if (message.trim() && socket) {
+    if (newMessage.trim() && socket) {
       const messageData = {
-        content: message,
-        sender: username,
-        timestamp: new Date().toISOString(),
-        roomId: roomId
+        content: newMessage.trim(),
+        sender: socket.query.username,
+        roomId: currentRoom.id,
+        timestamp: new Date().toISOString()
       };
 
       socket.emit('message', messageData);
-      setMessage('');
+      setNewMessage('');
     }
+  };
+
+  const handleRoomChange = (roomId) => {
+    const username = new URLSearchParams(location.search).get('username');
+    navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(roomId)}`);
   };
 
   const formatTime = (timestamp) => {
@@ -136,109 +93,88 @@ function ChatPage({ isDarkMode }) {
     });
   };
 
-return (
-  <div className={`chat-container ${isDarkMode ? 'dark-mode' : ''}`}>
-    {/* Room Selection Modal */}
-    {showRoomModal && (
-      <div className="room-modal-overlay">
-        <div className="room-modal">
-          <h3>Enter Room Password</h3>
-          <form onSubmit={(e) => handlePasswordSubmit(e, PRESET_ROOMS.find(room => room.isPrivate))}>
-            <input
-              type="password"
-              value={roomPassword}
-              onChange={(e) => setRoomPassword(e.target.value)}
-              placeholder="Enter password"
-            />
-            <div className="room-modal-buttons">
-              <button type="submit">Join Room</button>
-              <button type="button" onClick={() => setShowRoomModal(false)}>Cancel</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    )}
+  if (isLoading) {
+    return <div className="loading-messages">Loading...</div>;
+  }
 
-    {/* Sidebar */}
-    <aside className="chat-sidebar">
-      <div className="room-info">
-        <h2 className="room-title">{currentRoom.name}</h2>
-        <p className="room-description">{currentRoom.description}</p>
-        
-        {/* Room Selection Dropdown */}
+  return (
+    <div className={`chat-container ${isDarkMode ? 'dark-mode' : ''}`}>
+      {/* Sidebar */}
+      <aside className="chat-sidebar">
+        <div className="room-info">
+          <h2 className="room-title">{currentRoom?.name}</h2>
+          <p className="room-id">Room ID: {currentRoom?.id}</p>
+        </div>
+
         <div className="room-selector">
+          <h3>Available Rooms</h3>
           <select 
-            value={roomId}
-            onChange={(e) => handleRoomChange(PRESET_ROOMS.find(room => room.id.toString() === e.target.value))}
+            value={currentRoom?.id}
+            onChange={(e) => handleRoomChange(e.target.value)}
             className="room-select"
           >
             {PRESET_ROOMS.map(room => (
               <option key={room.id} value={room.id}>
-                {room.name} {room.isPrivate ? '🔒' : ''}
+                {room.name}
               </option>
             ))}
           </select>
         </div>
-      </div>
 
-      <div className="online-users">
-        <h3 className="online-users-title">Online Users ({onlineUsers.length})</h3>
-        <ul className="users-list">
-          {onlineUsers.map((user, index) => (
-            <li key={index} className="user-item">
-              <span className="user-status"></span>
-              <span className="user-name">{user}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </aside>
-
-    {/* Main Chat Area */}
-    <main className="chat-main">
-      {isLoading ? (
-        <div className="loading-messages">
-          <div className="loading-spinner"></div>
-        </div>
-      ) : (
-        <>
-          <div className="messages-container">
-            {messages.map((msg, index) => (
-              <div
-                key={index}
-                className={`message ${msg.sender === username ? 'message-self' : 'message-other'}`}
-              >
-                <div className="message-info">
-                  <span className="message-sender">
-                    {msg.sender === username ? 'You' : msg.sender}
-                  </span>
-                  <span className="message-time">{formatTime(msg.timestamp)}</span>
-                </div>
-                <div className="message-content">{msg.content}</div>
-              </div>
+        <div className="online-users">
+          <h3 className="online-users-title">Online Users ({onlineUsers.length})</h3>
+          <ul className="users-list">
+            {onlineUsers.map((user, index) => (
+              <li key={index} className="user-item">
+                <span className="user-status"></span>
+                <span className="user-name">{user}</span>
+              </li>
             ))}
-            <div ref={messagesEndRef} />
-          </div>
+          </ul>
+        </div>
+      </aside>
 
-          <div className="message-input-container">
-            <form onSubmit={handleSubmit} className="message-form">
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="Type a message..."
-                className="message-input"
-              />
-              <button type="submit" className="message-send-btn">
-                Send
-              </button>
-            </form>
-          </div>
-        </>
-      )}
-    </main>
-  </div>
-);
+      {/* Main Chat Area */}
+      <main className="chat-main">
+        <div className="messages-container">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`message ${msg.sender === socket?.query.username ? 'message-self' : ''}`}
+            >
+              <div className="message-info">
+                <span className="message-sender">
+                  {msg.sender === socket?.query.username ? 'You' : msg.sender}
+                </span>
+                <span className="message-time">{formatTime(msg.timestamp)}</span>
+              </div>
+              <div className="message-content">{msg.content}</div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="message-input-container">
+          <form onSubmit={handleSendMessage} className="message-form">
+            <input
+              type="text"
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              placeholder="Type a message..."
+              className="message-input"
+            />
+            <button 
+              type="submit" 
+              className="send-button"
+              disabled={!newMessage.trim()}
+            >
+              Send
+            </button>
+          </form>
+        </div>
+      </main>
+    </div>
+  );
 }
 
 export default ChatPage;
