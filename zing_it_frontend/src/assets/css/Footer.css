@@ -1,110 +1,110 @@
-/* src/components/Footer.css */
+/* src/assets/css/Footer.css */
 
 .footer {
-    background-color: var(--bg-primary, #ffffff);
-    color: var(--text-secondary, #6b7280);
-    padding: 1.5rem 0;
-    font-size: 0.875rem;
-    border-top: 1px solid var(--border-color, #e5e7eb);
-    transition: background-color 0.3s ease, color 0.3s ease;
-  }
-  
+  background-color: var(--bg-primary, #ffffff);
+  color: var(--text-secondary, #6b7280);
+  padding: 1.5rem 0;
+  font-size: 0.875rem;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-logo {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary, #1f2937);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-logo:hover {
+  color: var(--primary-color, #4f46e5);
+}
+
+.footer-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-nav-item {
+  color: var(--text-secondary, #6b7280);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-nav-item:hover {
+  color: var(--primary-color, #4f46e5);
+}
+
+.footer-social {
+  display: flex;
+  gap: 1rem;
+}
+
+.social-icon {
+  color: var(--text-secondary, #6b7280);
+  font-size: 1.25rem;
+  transition: color 0.3s ease;
+}
+
+.social-icon:hover {
+  color: var(--primary-color, #4f46e5);
+}
+
+.footer-copyright {
+  width: 100%;
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border-color, #e5e7eb);
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .footer {
+  background-color: var(--bg-primary, #1f2937);
+  color: var(--text-secondary, #9ca3af);
+  border-top-color: var(--border-color, #4b5563);
+}
+
+[data-theme="dark"] .footer-logo {
+  color: var(--text-primary, #f3f4f6);
+}
+
+[data-theme="dark"] .footer-nav-item,
+[data-theme="dark"] .social-icon {
+  color: var(--text-secondary, #9ca3af);
+}
+
+[data-theme="dark"] .footer-logo:hover,
+[data-theme="dark"] .footer-nav-item:hover,
+[data-theme="dark"] .social-icon:hover {
+  color: var(--primary-color, #818cf8);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
   .footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .footer-logo {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--text-primary, #1f2937);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .footer-logo:hover {
-    color: var(--primary-color, #4f46e5);
-  }
-  
-  .footer-nav {
-    display: flex;
+    flex-direction: column;
     gap: 1.5rem;
   }
-  
-  .footer-nav-item {
-    color: var(--text-secondary, #6b7280);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-  
-  .footer-nav-item:hover {
-    color: var(--primary-color, #4f46e5);
-  }
-  
+
+  .footer-nav,
   .footer-social {
-    display: flex;
-    gap: 1rem;
+    justify-content: center;
   }
-  
-  .social-icon {
-    color: var(--text-secondary, #6b7280);
-    font-size: 1.25rem;
-    transition: color 0.3s ease;
-  }
-  
-  .social-icon:hover {
-    color: var(--primary-color, #4f46e5);
-  }
-  
+
   .footer-copyright {
-    width: 100%;
-    text-align: center;
-    margin-top: 1.5rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border-color, #e5e7eb);
+    margin-top: 1rem;
+    padding-top: 1rem;
   }
-  
-  /* Dark mode styles */
-  [data-theme="dark"] .footer {
-    background-color: var(--bg-primary, #1f2937);
-    color: var(--text-secondary, #9ca3af);
-    border-top-color: var(--border-color, #4b5563);
-  }
-  
-  [data-theme="dark"] .footer-logo {
-    color: var(--text-primary, #f3f4f6);
-  }
-  
-  [data-theme="dark"] .footer-nav-item,
-  [data-theme="dark"] .social-icon {
-    color: var(--text-secondary, #9ca3af);
-  }
-  
-  [data-theme="dark"] .footer-logo:hover,
-  [data-theme="dark"] .footer-nav-item:hover,
-  [data-theme="dark"] .social-icon:hover {
-    color: var(--primary-color, #818cf8);
-  }
-  
-  /* Responsive styles */
-  @media (max-width: 768px) {
-    .footer-container {
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-  
-    .footer-nav,
-    .footer-social {
-      justify-content: center;
-    }
-  
-    .footer-copyright {
-      margin-top: 1rem;
-      padding-top: 1rem;
-    }
-  }
+}

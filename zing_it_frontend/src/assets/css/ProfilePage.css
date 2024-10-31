@@ -1,0 +1,208 @@
+/* src/assets/css/ProfilePage.css */
+
+.profile-container {
+    max-width: 800px;
+    margin: 2rem auto ;
+    padding: 2rem;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    border-radius: 0.5rem;
+    box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  }
+  
+  .profile-card {
+    padding: 2rem;
+  }
+  
+  .profile-title {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+  
+  .profile-image-container {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-right: 1rem;
+  }
+  
+  .profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .profile-image-upload {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  
+  .profile-image-upload:hover {
+    opacity: 1;
+  }
+  
+  .image-upload-label {
+    color: #fff;
+    cursor: pointer;
+  }
+  
+  .hidden {
+    display: none;
+  }
+  
+  .profile-form {
+    margin-bottom: 2rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+  }
+  
+  .form-group input[type="checkbox"] {
+    margin-right: 0.5rem;
+  }
+  
+  .form-group select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.25rem;
+  }
+  
+  .profile-actions {
+    margin-top: 2rem;
+  }
+  
+  .edit-button,
+  .save-button,
+  .cancel-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+  }
+  
+  .edit-button {
+    background-color: var(--primary-color);
+    color: #fff;
+  }
+  
+  .save-button {
+    background-color: var(--primary-color);
+    color: #fff;
+  }
+  
+  .cancel-button {
+    background-color: var(--bg-secondary);
+    color: var(--text-secondary);
+  }
+  
+  .danger-zone {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: var(--bg-danger);
+    color: var(--text-danger);
+    border-radius: 0.25rem;
+  }
+  
+  .delete-account-button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    background-color: var(--bg-danger);
+    color: #fff;
+  }
+  
+  /* Dark mode styles */
+  [data-theme="dark"] .profile-container {
+    background-color: var(--bg-primary-dark);
+    color: var(--text-primary-dark);
+  }
+  
+  [data-theme="dark"] .profile-card {
+    background-color: var(--bg-secondary-dark);
+  }
+  
+  [data-theme="dark"] .profile-title {
+    color: var(--text-primary-dark);
+  }
+  
+  [data-theme="dark"] .profile-image-container {
+    border: 1px solid var(--border-color-dark);
+  }
+  
+  [data-theme="dark"] .profile-form {
+    color: var(--text-secondary-dark);
+  }
+  
+  [data-theme="dark"] .form-group label {
+    color: var(--text-secondary-dark);
+  }
+  
+  [data-theme="dark"] .form-group input[type="text"],
+  [data-theme="dark"] .form-group input[type="email"],
+  [data-theme="dark"] .form-group textarea {
+    border-color: var(--border-color-dark);
+    background-color: var(--bg-secondary-dark);
+    color: var(--text-secondary-dark);
+  }
+  
+  [data-theme="dark"] .form-group select {
+    border-color: var(--border-color-dark);
+    background-color: var(--bg-secondary-dark);
+    color: var(--text-secondary-dark);
+  }
+  
+  [data-theme="dark"] .profile-actions {
+    color: var(--text-secondary-dark);
+  }
+  
+  [data-theme="dark"] .edit-button,
+  [data-theme="dark"] .save-button,
+  [data-theme="dark"] .cancel-button {
+    background-color: var(--primary-color-dark);
+    color: #fff;
+  }
+  
+  [data-theme="dark"] .danger-zone {
+    background-color: var(--bg-danger-dark);
+    color: var(--text-danger-dark);
+  }
+  
+  [data-theme=" dark"] .delete-account-button {
+    background-color: var(--bg-danger-dark);
+    color: #fff;
+  }

@@ -1,0 +1,77 @@
+/* src/assets/css/TermsPage.css */
+
+.terms-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: calc(100vh - 200px);
+  }
+  
+  .terms-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--text-primary);
+  }
+  
+  .terms-content {
+    line-height: 1.6;
+  }
+  
+  .terms-section {
+    margin-bottom: 2rem;
+  }
+  
+  .terms-section h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+  }
+  
+  .terms-section p {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+  }
+  
+  .terms-section ul {
+    list-style-type: disc;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .terms-section li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+  
+  .terms-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .terms-link:hover {
+    text-decoration: underline;
+  }
+  
+  .terms-footer {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+  }
+  
+  /* Dark mode styles */
+  [data-theme="dark"] .terms-container {
+    background-color: var(--bg-primary-dark);
+  }
+  
+  [data-theme="dark"] .terms-title {
+    color: var(--text-primary-dark);
+  }

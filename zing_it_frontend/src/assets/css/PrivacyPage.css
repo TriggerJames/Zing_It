@@ -1,0 +1,84 @@
+/* src/assets/css/PrivacyPage.css */
+
+.privacy-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  
+  .privacy-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .privacy-content {
+    line-height: 1.6;
+  }
+  
+  .privacy-content section {
+    margin-bottom: 2rem;
+  }
+  
+  .privacy-content h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+  }
+  
+  .privacy-content p {
+    margin-bottom: 1rem;
+  }
+  
+  .privacy-content ul {
+    list-style-type: disc;
+    margin-left: 2rem;
+    margin-bottom: 1rem;
+  }
+  
+  .privacy-content a {
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+  
+  .privacy-content a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Dark mode styles */
+  [data-theme="dark"] .privacy-container {
+    background-color: var(--bg-primary-dark);
+    color: var(--text-primary-dark);
+  }
+  
+  [data-theme="dark"] .privacy-title {
+    color: var(--text-primary-dark);
+  }
+  
+  [data-theme="dark"] .privacy-content h2 {
+    color: var(--text-primary-dark);
+  }
+  
+  [data-theme="dark"] .privacy-content a {
+    color: var(--primary-color-dark);
+  }
+  
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .privacy-container {
+      padding: 1rem;
+    }
+  
+    .privacy-title {
+      font-size: 2rem;
+    }
+  
+    .privacy-content h2 {
+      font-size: 1.25rem;
+    }
+  }
