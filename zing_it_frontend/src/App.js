@@ -1,33 +1,28 @@
 // src/App.js
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Landing from './Landing';
-import Home from './Home';
-import Chat from './Chat';
-import AppContext from './AppContext';
-import Header from './Header'; // Import the Header component
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Header from './components/Header';
+import Home from './components/Home';
+import ChatPage from './components/ChatPage';
 
-const App = () => {
-    const [isDarkMode, setIsDarkMode] = useState(false);
+function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-    const toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
-    };
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+  };
 
-    return (
-        <AppContext.Provider value={{ isDarkMode, toggleDarkMode }}>
-            <Router>
-                <div className={isDarkMode ? 'dark-mode' : 'light-mode'}>
-                    <Header /> {/* Include the Header component */}
-                    <Routes>
-                        <Route path="/" element={<Landing />} />
-                        <Route path="/home" element={<Home />} />
-                        <Route path="/chat" element={<Chat />} />
-                    </Routes>
-                </div>
-            </Router>
-        </AppContext.Provider>
-    );
-};
+  return (
+    <Router>
+      <div className={`font-sans ${isDarkMode ? 'dark' : ''}`}>
+        <Header toggleDarkMode={toggleDarkMode} isDarkMode={isDarkMode} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/chat" element={<ChatPage />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
 
 export default App;

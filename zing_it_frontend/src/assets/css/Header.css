@@ -1,0 +1,31 @@
+/* src/assets/css/Header.css */
+.header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .header.dark {
+    background-color: #fff;
+    color: #333;
+  }
+  
+  .logo {
+    width: 40px;
+    height: 40px;
+    margin: 10px;
+  }
+  
+  .dark-mode-toggle {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .dark-mode-toggle:hover {
+    background-color: #444;
+  }
