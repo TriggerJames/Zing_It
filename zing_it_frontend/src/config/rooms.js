@@ -1,7 +1,22 @@
 // src/config/rooms.js
 export const PRESET_ROOMS = [
-    { id: 1, name: 'General', description: 'General discussion', isPrivate: false },
-    { id: 2, name: 'Technology', description: 'Tech talks', isPrivate: false },
-    { id: 3, name: 'Gaming', description: 'Gaming discussions', isPrivate: false },
-    { id: 4, name: 'Private Room', description: 'Private discussions', isPrivate: true, password: '1234' }
-  ];
+  {
+    id: 1,
+    name: 'General',
+    description: 'General discussion room',
+    isPrivate: false
+  },
+  {
+    id: 2,
+    name: 'Tech Talk',
+    description: 'Technology discussions',
+    isPrivate: false
+  },
+  {
+    id: 3,
+    name: 'VIP Room',
+    description: 'Private discussion room',
+    isPrivate: true,
+    password: 'vip123'
+  }
+];
