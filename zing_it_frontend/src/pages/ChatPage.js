@@ -1,8 +1,7 @@
-// src/pages/ChatPage.js
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-import { CHAT_ROOMS, getRoomById } from '../config/rooms';
+import { CHAT_ROOMS } from '../config/rooms';
 import '../assets/css/ChatPage.css';
 
 function ChatPage({ isDarkMode }) {
@@ -11,6 +10,7 @@ function ChatPage({ isDarkMode }) {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [currentRoom, setCurrentRoom] = useState(null);
+  const [currentSubcategory, setCurrentSubcategory] = useState(null);
   const [newMessage, setNewMessage] = useState('');
   const [onlineUsers, setOnlineUsers] = useState([]);
   const messagesEndRef = useRef(null);
@@ -25,45 +25,37 @@ function ChatPage({ isDarkMode }) {
     scrollToBottom();
   }, [messages]);
 
-  // Memoize joinRoom function
-  const joinRoom = useCallback((roomId) => {
-    if (socket) {
-      const room = getRoomById(roomId);
-      if (room) {
-        if (room.isPrivate) {
-          // Implement password prompt for private rooms
-          const password = prompt(`Enter password for ${room.name}:`);
-          if (password !== room.password) {
-            alert('Incorrect password');
-            return;
-          }
-        }
-        socket.emit('joinRoom', { roomId });
-        setCurrentRoom(room);
-        setMessages([]);
-      }
-    }
-  }, [socket]);
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const username = params.get('username');
-    const roomId = params.get('roomId') || 'general';
+    const roomId = params.get('roomId');
+    const subcategoryId = params.get('subcategoryId');
 
-    if (!username) {
+    if (!username || !roomId) {
       navigate('/');
       return;
     }
 
+    const room = CHAT_ROOMS.find(r => r.id.toString() === roomId);
+    if (!room) {
+      navigate('/');
+      return;
+    }
+
+    setCurrentRoom(room);
+    if (subcategoryId) {
+      const subcategory = room.subcategories.find(sub => sub.id === subcategoryId);
+      setCurrentSubcategory(subcategory);
+    }
+
     const newSocket = io('http://localhost:5000', {
-      query: { username, roomId }
+      query: { username, roomId, subcategoryId }
     });
 
     setSocket(newSocket);
 
     newSocket.on('connect', () => {
       setIsLoading(false);
-      joinRoom(roomId);
     });
 
     newSocket.on('message', (message) => {
@@ -77,15 +69,16 @@ function ChatPage({ isDarkMode }) {
     return () => {
       newSocket.disconnect();
     };
-  }, [location, navigate, joinRoom]);
+  }, [location, navigate]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (newMessage.trim() && socket && currentRoom) {
+    if (newMessage.trim() && socket) {
       const messageData = {
         content: newMessage.trim(),
         sender: socket.query.username,
         roomId: currentRoom.id,
+        subcategoryId: currentSubcategory?.id,
         timestamp: new Date().toISOString()
       };
 
@@ -94,15 +87,17 @@ function ChatPage({ isDarkMode }) {
     }
   };
 
+  const handleSubcategoryChange = (subcategoryId) => {
+    const username = new URLSearchParams(location.search).get('username');
+    navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(currentRoom.id)}&subcategoryId=${encodeURIComponent(subcategoryId)}`);
+  };
+
   const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    return new Date(timestamp).toLocaleTimeString();
   };
 
   if (isLoading) {
-    return <div className="loading-messages">Loading...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
@@ -110,37 +105,31 @@ function ChatPage({ isDarkMode }) {
       {/* Sidebar */}
       <aside className="chat-sidebar">
         <div className="room-info">
-          <h2 className="room-title">Chat Rooms</h2>
+          <h2 className="room-title">{currentRoom?.name}</h2>
+          <p className="room-description">{currentRoom?.description}</p>
         </div>
 
-        <nav className="room-nav">
-          {Object.entries(CHAT_ROOMS).map(([key, room]) => (
-            <div key={room.id} className="room-category">
-              <button
-                onClick={() => joinRoom(room.id)}
-                className={`room-button ${currentRoom?.id === room.id ? 'active' : ''}`}
+        <div className="subcategories">
+          <h3>Subcategories</h3>
+          <ul className="subcategory-list">
+            {currentRoom?.subcategories.map(subcategory => (
+              <li 
+                key={subcategory.id}
+                className={`subcategory-item ${currentSubcategory?.id === subcategory.id ? 'active' : ''}`}
               >
-                {room.name}
-              </button>
-              {room.subCategories && (
-                <div className="sub-categories">
-                  {Object.values(room.subCategories).map(subRoom => (
-                    <button
-                      key={subRoom.id}
-                      onClick={() => joinRoom(subRoom.id)}
-                      className={`sub-room-button ${currentRoom?.id === subRoom.id ? 'active' : ''}`}
-                    >
-                      {subRoom.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-        </nav>
+                <button
+                  onClick={() => handleSubcategoryChange(subcategory.id)}
+                  className="subcategory-button"
+                >
+                  {subcategory.name}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="online-users">
-          <h3 className="online-users-title">Online Users ({onlineUsers.length})</h3>
+          <h3>Online Users ({onlineUsers.length})</h3>
           <ul className="users-list">
             {onlineUsers.map((user, index) => (
               <li key={index} className="user-item">
@@ -154,10 +143,6 @@ function ChatPage({ isDarkMode }) {
 
       {/* Main Chat Area */}
       <main className="chat-main">
-        <div className="current-room-info">
-          <h2>{currentRoom?.name}</h2>
-          <p>{currentRoom?.description}</p>
-        </div>
         <div className="messages-container">
           {messages.map((msg, index) => (
             <div
@@ -176,27 +161,24 @@ function ChatPage({ isDarkMode }) {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="message-input-container">
-          <form onSubmit={handleSendMessage} className="message-form">
-            <input
-              type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              placeholder="Type a message..."
-              className="message-input"
-            />
-            <button 
-              type="submit" 
-              className="send-button"
-              disabled={!newMessage.trim()}
-            >
-              Send
-            </button>
-          </form>
-        </div>
+        <form onSubmit={handleSendMessage} className="message-form">
+          <input
+            type="text"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="Type a message..."
+            className="message-input"
+          />
+          <button 
+            type="submit" 
+            className="send-button"
+            disabled={!newMessage.trim()}
+          >
+            Send
+          </button>
+        </form>
       </main>
     </div>
-  );
-}
+  ); }
 
 export default ChatPage;
