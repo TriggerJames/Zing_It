@@ -1,0 +1,21 @@
+import jwt from 'jsonwebtoken';
+
+const authMiddleware = (req, res, next) => {
+  try {
+    const token = req.headers.authorization.split(' ')[1];
+
+    const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
+
+    req.body.userId = decodedToken.userId;
+
+    next();
+  } catch(error) {
+    res.status(401).send({
+      message: 'Authentication failed',
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+export default authMiddleware;
