@@ -4,7 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import '../assets/css/Footer.css';
 
-// Assuming you're using Font Awesome for icons
+// Font Awesome for icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faTwitter, faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 
@@ -13,7 +13,7 @@ function Footer() {
     <footer className="footer">
       <div className="footer-container">
         <Link to="/" className="footer-logo">
-          ChatApp
+          Zing_It
         </Link>
 
         <nav className="footer-nav">

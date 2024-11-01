@@ -14,6 +14,8 @@ import ProfilePage from './pages/ProfilePage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import Home from './pages/Home';
+import About from './pages/About';
+import RoomsPage from './pages/RoomsPage';
 
 // Styles
 import './assets/css/App.css';
@@ -32,6 +34,8 @@ function App() {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/terms" element={<TermsPage />} />
+              <Route path="/rooms" element={<RoomsPage />} />
+              <Route path="/about" element={<About />} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>
