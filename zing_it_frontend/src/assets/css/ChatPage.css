@@ -1,161 +1,46 @@
-/* src/assets/css/ChatPage.css */
-.chat-container {
-  display: flex;
-  height: calc(100vh - var(--header-height) - var(--footer-height));
-  background-color: var(--bg-secondary);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  margin: var(--spacing-md);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+/* Add these styles to src/assets/css/ChatPage.css */
+
+.room-nav {
+  overflow-y: auto;
+  max-height: calc(100vh - 200px);
 }
 
-.chat-sidebar {
-  width: 280px;
-  background-color: var(--bg-primary);
-  border-right: 1px solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-}
-
-.rooms-section {
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.rooms-section h2 {
-  margin-bottom: var(--spacing-md);
-  font-size: 1.25rem;
-  color: var(--text-primary);
-}
-
-.room-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+.room-category {
+  margin-bottom: 10px;
 }
 
 .room-button {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-md);
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  background: none;
   border: none;
-  border-radius: var(--border-radius);
-  background-color: var(--bg-secondary);
   cursor: pointer;
-  transition: all var(--transition-speed) var(--transition-ease);
-}
-
-.room-button.active {
+  font-weight: bold;
+  color: var(--text-primary);
+} .room-button.active {
   background-color: var(--primary-color);
-  color: white;
+  color: #fff;
 }
 
-.room-button:hover:not(.active) {
-  background-color: var(--border-color);
+.sub-categories {
+  padding-left: 20px;
 }
 
-.online-users {
-  padding: var(--spacing-md);
-  flex-grow: 1;
-  overflow-y: auto;
-}
-
-.users-list {
-  list-style: none;
-  margin-top: var(--spacing-md);
-}
-
-.user-item {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  padding: var(--spacing-sm) 0;
-}
-
-.user-status {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--success-color);
-}
-
-.chat-main {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-header {
-  padding: var(--spacing-md);
-  background-color: var(--bg-primary);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.messages-container {
-  flex-grow: 1;
-  padding: var(--spacing-md);
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
-}
-
-.message {
-  max-width: 70%;
-  padding: var(--spacing-md);
-  border-radius: var(--border-radius);
-  background-color: var(--bg-primary);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.message-self {
-  align-self : flex-end;
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.message-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.message-sender {
-  font-size: 0.875rem;
+.sub-room-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
   color: var(--text-secondary);
 }
 
-.message-time {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-}
-
-.message-form {
-  padding: var(--spacing-md);
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.message-input {
-  flex-grow: 1;
-  padding: var(--spacing-md);
-  border: none;
-  border-radius: var(--border-radius);
-  background-color: var(--bg-secondary);
-  transition: all var(--transition-speed) var(--transition-ease);
-}
-
-.send-button {
-  padding: var(--spacing-md);
-  border: none;
-  border-radius: var(--border-radius);
+.sub-room-button.active {
   background-color: var(--primary-color);
-  color: white;
-  cursor: pointer;
-  transition: all var(--transition-speed) var(--transition-ease);
-}
-
-.send-button:hover {
-  background-color: var(--primary-hover);
+  color: #fff;
 }

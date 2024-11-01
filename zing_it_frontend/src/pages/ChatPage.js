@@ -1,8 +1,8 @@
 // src/pages/ChatPage.js
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
-import { PRESET_ROOMS } from '../config/rooms';
+import { CHAT_ROOMS, getRoomById } from '../config/rooms';
 import '../assets/css/ChatPage.css';
 
 function ChatPage({ isDarkMode }) {
@@ -25,23 +25,35 @@ function ChatPage({ isDarkMode }) {
     scrollToBottom();
   }, [messages]);
 
+  // Memoize joinRoom function
+  const joinRoom = useCallback((roomId) => {
+    if (socket) {
+      const room = getRoomById(roomId);
+      if (room) {
+        if (room.isPrivate) {
+          // Implement password prompt for private rooms
+          const password = prompt(`Enter password for ${room.name}:`);
+          if (password !== room.password) {
+            alert('Incorrect password');
+            return;
+          }
+        }
+        socket.emit('joinRoom', { roomId });
+        setCurrentRoom(room);
+        setMessages([]);
+      }
+    }
+  }, [socket]);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const username = params.get('username');
-    const roomId = params.get('roomId');
+    const roomId = params.get('roomId') || 'general';
 
-    if (!username || !roomId) {
+    if (!username) {
       navigate('/');
       return;
     }
-
-    const room = PRESET_ROOMS.find(r => r.id.toString() === roomId);
-    if (!room) {
-      navigate('/');
-      return;
-    }
-
-    setCurrentRoom(room);
 
     const newSocket = io('http://localhost:5000', {
       query: { username, roomId }
@@ -51,6 +63,7 @@ function ChatPage({ isDarkMode }) {
 
     newSocket.on('connect', () => {
       setIsLoading(false);
+      joinRoom(roomId);
     });
 
     newSocket.on('message', (message) => {
@@ -64,11 +77,11 @@ function ChatPage({ isDarkMode }) {
     return () => {
       newSocket.disconnect();
     };
-  }, [location, navigate]);
+  }, [location, navigate, joinRoom]);
 
   const handleSendMessage = (e) => {
     e.preventDefault();
-    if (newMessage.trim() && socket) {
+    if (newMessage.trim() && socket && currentRoom) {
       const messageData = {
         content: newMessage.trim(),
         sender: socket.query.username,
@@ -79,11 +92,6 @@ function ChatPage({ isDarkMode }) {
       socket.emit('message', messageData);
       setNewMessage('');
     }
-  };
-
-  const handleRoomChange = (roomId) => {
-    const username = new URLSearchParams(location.search).get('username');
-    navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(roomId)}`);
   };
 
   const formatTime = (timestamp) => {
@@ -102,24 +110,34 @@ function ChatPage({ isDarkMode }) {
       {/* Sidebar */}
       <aside className="chat-sidebar">
         <div className="room-info">
-          <h2 className="room-title">{currentRoom?.name}</h2>
-          <p className="room-id">Room ID: {currentRoom?.id}</p>
+          <h2 className="room-title">Chat Rooms</h2>
         </div>
 
-        <div className="room-selector">
-          <h3>Available Rooms</h3>
-          <select 
-            value={currentRoom?.id}
-            onChange={(e) => handleRoomChange(e.target.value)}
-            className="room-select"
-          >
-            {PRESET_ROOMS.map(room => (
-              <option key={room.id} value={room.id}>
+        <nav className="room-nav">
+          {Object.entries(CHAT_ROOMS).map(([key, room]) => (
+            <div key={room.id} className="room-category">
+              <button
+                onClick={() => joinRoom(room.id)}
+                className={`room-button ${currentRoom?.id === room.id ? 'active' : ''}`}
+              >
                 {room.name}
-              </option>
-            ))}
-          </select>
-        </div>
+              </button>
+              {room.subCategories && (
+                <div className="sub-categories">
+                  {Object.values(room.subCategories).map(subRoom => (
+                    <button
+                      key={subRoom.id}
+                      onClick={() => joinRoom(subRoom.id)}
+                      className={`sub-room-button ${currentRoom?.id === subRoom.id ? 'active' : ''}`}
+                    >
+                      {subRoom.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
 
         <div className="online-users">
           <h3 className="online-users-title">Online Users ({onlineUsers.length})</h3>
@@ -136,6 +154,10 @@ function ChatPage({ isDarkMode }) {
 
       {/* Main Chat Area */}
       <main className="chat-main">
+        <div className="current-room-info">
+          <h2>{currentRoom?.name}</h2>
+          <p>{currentRoom?.description}</p>
+        </div>
         <div className="messages-container">
           {messages.map((msg, index) => (
             <div

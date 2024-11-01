@@ -1,47 +1,54 @@
 // src/pages/RoomsPage.js
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { PRESET_ROOMS } from '../config/rooms';
-import '../assets/css/RoomsPage.css';
+import { Link } from 'react-router-dom';
+import { CHAT_ROOMS } from '../config/rooms';
 
 function RoomsPage() {
-  const navigate = useNavigate();
-  
-  const handleJoinRoom = (room) => {
-    if (room.isPrivate) {
-      // Handle private room logic
-      alert('This is a private room. Password required.');
-      return;
-    }
-    
-    const username = prompt('Enter your username:');
-    if (!username) return;
-    
-    navigate(`/chat?username=${encodeURIComponent(username)}&roomId=${encodeURIComponent(room.id)}`);
+  // Convert the CHAT_ROOMS object into a flat array of all rooms including subcategories
+  const getAllRooms = () => {
+    const rooms = [];
+    Object.values(CHAT_ROOMS).forEach(room => {
+      rooms.push({
+        id: room.id,
+        name: room.name,
+        description: room.description,
+        isPrivate: room.isPrivate
+      });
+      
+      if (room.subCategories) {
+        Object.values(room.subCategories).forEach(subRoom => {
+          rooms.push({
+            id: subRoom.id,
+            name: subRoom.name,
+            description: subRoom.description,
+            isPrivate: subRoom.isPrivate
+          });
+        });
+      }
+    });
+    return rooms;
   };
 
   return (
-    <div className="rooms-page">
-      <div className="rooms-container">
-        <h1 className="rooms-title">Available Chat Rooms</h1>
-        <div className="rooms-grid">
-          {PRESET_ROOMS.map(room => (
-            <div key={room.id} className="room-card">
-              <div className="room-card-content">
-                <h2 className="room-name">
-                  {room.name} {room.isPrivate && '🔒'}
-                </h2>
-                <p className="room-description">{room.description}</p>
-                <button 
-                  onClick={() => handleJoinRoom(room)}
-                  className="join-button"
-                >
-                  Join Room
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
+    <div className="rooms-container">
+      <h1>Available Chat Rooms</h1>
+      <div className="rooms-grid">
+        {getAllRooms().map(room => (
+          <div key={room.id} className="room-card">
+            <h2>{room.name}</h2>
+            <p>{room.description}</p>
+            {room.isPrivate ? (
+              <span className="private-badge">Private</span>
+            ) : (
+              <Link 
+                to={`/chat?roomId=${room.id}`} 
+                className="join-room-button"
+              >
+                Join Room
+              </Link>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
