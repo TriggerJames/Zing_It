@@ -9,14 +9,14 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 // Pages
+import Home from './pages/Home';
+import About from './pages/About';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
 import ChatPage from './pages/ChatPage';
 import ProfilePage from './pages/ProfilePage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
-import Home from './pages/Home';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import About from './pages/About';
 import RoomsPage from './pages/RoomsPage';
 
 // Styles
