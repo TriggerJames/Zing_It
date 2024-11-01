@@ -1,33 +1,69 @@
-export const CHAT_ROOMS = [
-  {
-    id: 1,
+// src/config/rooms.js
+
+export const CHAT_ROOMS = {
+  General: { 
+    id: 'general', 
     name: 'General',
-    description: 'General discussion room',
-    isPrivate: false,
-    subcategories: [
-      { id: '1.1', name: 'General Chat', description: 'Chat about anything' },
-      { id: '1.2', name: 'Announcements', description: 'Official announcements' }
-    ]
+    description: 'General discussion for all topics',
+    isPrivate: false
   },
-  {
-    id: 2,
-    name: 'Tech Talk',
-    description: 'Technology discussions',
+  Devs: {
+    id: 'devs',
+    name: 'Devs',
+    description: 'Discussions for developers',
     isPrivate: false,
-    subcategories: [
-      { id: '2.1', name: 'Web Development', description: 'Discuss web development topics' },
-      { id: '2.2', name: 'AI & ML', description: 'Talk about AI and machine learning' }
-    ]
+    subCategories: {
+      TechNews: { 
+        id: 'devs-tech-news', 
+        name: 'Tech News',
+        description: 'Latest technology news and updates',
+        isPrivate: false
+      },
+      Backend: { 
+        id: 'devs-backend', 
+        name: 'Backend',
+        description: 'Backend development discussions',
+        isPrivate: false
+      },
+      Frontend: { 
+        id: 'devs-frontend', 
+        name: 'Frontend',
+        description: 'Frontend development discussions',
+        isPrivate: false
+      },
+    },
   },
-  {
-    id: 3,
-    name: 'VIP Room',
-    description: 'Private discussion room',
+  Sports: {
+    id: 'sports',
+    name: 'Sports',
+    description: 'All things sports',
+    isPrivate: false,
+    subCategories: {
+      Football: { 
+        id: 'sports-football', 
+        name: 'Football',
+        description: 'Football discussions',
+        isPrivate: false
+      },
+      Basketball: { 
+        id: 'sports-basketball', 
+        name: 'Basketball',
+        description: 'Basketball discussions',
+        isPrivate: false
+      },
+      Tennis: { 
+        id: 'sports-tennis', 
+        name: 'Tennis',
+        description: 'Tennis discussions',
+        isPrivate: false
+      }
+    },
+  },
+  VIPRoom: { 
+    id: 'vip-room', 
+    name: 'Private Room',
+    description: 'Exclusive room for VIP members',
     isPrivate: true,
-    password: 'vip123',
-    subcategories: [
-      { id: '3.1', name: 'VIP General', description: 'VIP general discussion' },
-      { id: '3.2', name: 'VIP Events', description: 'VIP special events' }
-    ]
-  }
-];
+    password: 'vip123'
+  },
+};
