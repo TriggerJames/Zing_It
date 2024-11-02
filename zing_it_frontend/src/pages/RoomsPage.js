@@ -1,12 +1,21 @@
 // src/pages/RoomsPage.js
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CHAT_ROOMS } from '../config/rooms';
+import { useAuth } from '../contexts/AuthContext';
 import '../assets/css/RoomsPage.css';
 
 function RoomsPage() {
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate('/login');
+    }
+  }, [currentUser, navigate]);
 
   const handleJoinRoom = (room) => {
     if (!username.trim()) {
@@ -23,7 +32,6 @@ function RoomsPage() {
       }
     }
 
-    // Navigate to chat page with username and room info
     navigate(`/chat?roomId=${room.id}&username=${encodeURIComponent(username)}`);
   };
 

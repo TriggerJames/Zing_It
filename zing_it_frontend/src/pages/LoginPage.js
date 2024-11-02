@@ -1,6 +1,7 @@
 // src/pages/LoginPage.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import '../assets/css/AuthPages.css';
 
 function LoginPage() {
@@ -11,6 +12,7 @@ function LoginPage() {
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,12 +32,10 @@ function LoginPage() {
   const validateForm = () => {
     const newErrors = {};
     
-    // Username validation
     if (!formData.username.trim()) {
       newErrors.username = 'Username or email is required';
     }
 
-    // Password validation
     if (!formData.password) {
       newErrors.password = 'Password is required';
     }
@@ -43,14 +43,29 @@ function LoginPage() {
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
 
     if (Object.keys(newErrors).length === 0) {
-      // TODO: Implement login logic here
-      console.log('Login form submitted:', formData);
-      navigate('/'); // Redirect to home page after login
+      try {
+        // Check for test login
+        if (process.env.NODE_ENV === 'development' &&
+            formData.username === 'testuser' &&
+            formData.password === 'Test123!') {
+          // Perform test login
+          login({ username: 'testuser', email: 'testuser@example.com' });
+          navigate('/');
+          return;
+        }
+
+        // Perform actual login logic here
+        // For now, we'll just simulate a successful login
+        login({ username: formData.username, email: `${formData.username}@example.com` });
+        navigate('/');
+      } catch (error) {
+        setErrors({ form: 'Invalid username or password' });
+      }
     } else {
       setErrors(newErrors);
     }
@@ -61,6 +76,7 @@ function LoginPage() {
       <h2>Login to Your Account</h2>
 
       <form onSubmit={handleSubmit} className="auth-form">
+        {errors.form && <div className="error-message">{errors.form}</div>}
         <div className="form-group">
           <input
             type="text"

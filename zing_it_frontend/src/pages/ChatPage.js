@@ -1,58 +1,59 @@
 // src/pages/ChatPage.js
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
 import { CHAT_ROOMS } from '../config/rooms';
+import { useAuth } from '../contexts/AuthContext';
 import '../assets/css/ChatPage.css';
+import notificationSound from '../assets/sounds/notification.mp3';
 
 function ChatPage() {
   const [socket, setSocket] = useState(null);
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [currentRoom, setCurrentRoom] = useState(null);
-  const [username, setUsername] = useState('');
   const [onlineUsers, setOnlineUsers] = useState([]);
   
   const location = useLocation();
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
+  const { currentUser } = useAuth();
+  const audioRef = useRef(new Audio(notificationSound));
 
-  // Auto-scroll to bottom when new messages arrive
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const roomId = params.get('roomId');
-    const username = params.get('username');
+    const roomId = params.get('roomId') || 'general';
 
-    if (!roomId || !username) {
-      navigate('/rooms');
+    if (!currentUser) {
+      navigate('/login');
       return;
     }
 
-    // Find the room details
     const room = Object.values(CHAT_ROOMS).find(r => r.id === roomId);
     if (!room) {
       navigate('/rooms');
       return;
     }
 
-    setUsername(username);
     setCurrentRoom(room);
 
-    // Connect to socket server
     const newSocket = io('http://localhost:5000', {
-      query: { username, roomId }
+      query: { username: currentUser.username, roomId }
     });
 
     setSocket(newSocket);
 
-    // Socket event listeners
     newSocket.on('message', (message) => {
       setMessages(prev => [...prev, message]);
       scrollToBottom();
+      if (message.username !== currentUser.username) {
+        audioRef.current.play();
+      }
     });
 
     newSocket.on('userJoined', (data) => {
@@ -71,11 +72,10 @@ function ChatPage() {
       setOnlineUsers(data.users);
     });
 
-    // Cleanup on unmount
     return () => {
       newSocket.close();
     };
-  }, [location.search, navigate]);
+  }, [location.search, navigate, currentUser]);
 
   const sendMessage = (e) => {
     e.preventDefault();
@@ -83,7 +83,7 @@ function ChatPage() {
       const messageData = {
         roomId: currentRoom.id,
         message: inputMessage,
-        username,
+        username: currentUser.username,
         timestamp: new Date().toISOString()
       };
 
@@ -116,15 +116,15 @@ function ChatPage() {
           {messages.map((msg, index) => (
             <div 
               key={index} 
-              className={`message ${msg.username === username ? 'message-self' : ''} ${msg.type === 'system' ? 'message-system' : ''}`}
+              className={`message ${msg.username === currentUser.username ? 'message-self' : ''} ${msg.type === 'system' ? 'message-system' : ''}`}
             >
               {msg.type === 'system' ? (
-                <div className="message-system-content">{msg.content}</div>
+                 <div className="message-system-content">{msg.content}</div>
               ) : (
                 <>
                   <div className="message-header">
                     <span className="message-username">
-                      {msg.username === username ? 'You' : msg.username}
+                      {msg.username === currentUser.username ? 'You' : msg.username}
                     </span>
                     <span className="message-time">
                       {new Date(msg.timestamp).toLocaleTimeString()}
