@@ -1,12 +1,15 @@
 import mongoose from 'mongoose';
 
 const chatSchema = new mongoose.Schema({
-  members:
-    type: [
-      {type: mongoose.Schema.ObjectId, ref: 'users'}
-    ],
+  members: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'users'
+    }
+  ],
   lastMessage: {
-    type: mongoose.Schema.Types.ObjectId, ref: 'messages'
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'messages'
   },
   unreadMessageCount: {
     type: Number,

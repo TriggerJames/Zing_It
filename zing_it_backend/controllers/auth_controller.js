@@ -40,12 +40,13 @@ authRouter.post('/signup', async (req, res) => {
 authRouter.post('/login', async (req, res) => {
   try {
     //check if user exits
-    const user = await User.findOne({email: req.body.email});
+    const user = await User.findOne({email: req.body.email}).select('+password');
+    console.log(user.password);
     if (!user) {
       return res.status(404).send({
-        message: 'User does not Exit',
+        message: 'User does not exit',
         success: false
-      });
+      })
     }
     //check if password is correct with users own in the database
     const isValid = await bcrypt.compare(req.body.password, user.password);
