@@ -11,18 +11,33 @@ The app is built using a modern stack with real-time WebSocket communication.
 - User presence indicator
 - Notification sound for new messages
 - Dark mode toggle
-- Responsive UI (supports mobile and desktop)
+- Responsive UI (cross-platform support)
+- User Friendly Interface
 - Message timestamps
 
-## Project Structure
+## Technologies Used
 
 - **Frontend**: React.js, TailwindCSS
-- **Backend**: Node.js, Socket.io
+- **Backend**: Node.js, Socket.io, Express.js
 - **Database**: MongoDB
 - **Real-time Communication**: Socket.io
+- **Authentication**: JSON Web Tokens
 
 ## Setup Instructions
 
-1. Clone the repository
-2. Navigate to the project directory:
-3. Install dependencies:
+### Prerequisites
+
+- Node.js (14.x or higher)
+- npm (6.x or higher)
+- MongoDB (3.6 or higher) or a MongoDB Atlas Account
+
+### Installation
+
+1. Clone the repository: `git clone https://github.com/yourusername/Zing_it.git`
+2. Navigate to the project directory: `cd Zing_it`
+3. Install dependencies: `npm install`
+4. Start the development environment: `npm start`
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like
