@@ -5,9 +5,9 @@ import '../assets/css/ProfilePage.css';
 
 function ProfilePage() {
   const [profileData, setProfileData] = useState({
-    displayName: 'John Doe',
-    email: 'john@example.com',
-    bio: 'Hello, I am John!',
+    displayName: 'Big Mitch',
+    email: 'mitch@example.com',
+    bio: 'Hello, I am Mitch!',
     theme: 'light',
     notifications: true,
     language: 'en'
@@ -24,7 +24,7 @@ function ProfilePage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you would typically send the updated profile data to a server
+    // Will update this to send the updated profile data to a server
     console.log('Updated profile:', profileData);
     setIsEditing(false);
   };

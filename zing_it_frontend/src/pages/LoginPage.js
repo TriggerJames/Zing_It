@@ -1,7 +1,7 @@
 // src/pages/LoginPage.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../contexts/AuthContext'; // Import useAuth
 import '../assets/css/AuthPages.css';
 
 function LoginPage() {
@@ -12,7 +12,7 @@ function LoginPage() {
 
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login } = useAuth(); // Get login function from useAuth
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -61,7 +61,7 @@ function LoginPage() {
         });
         const data = await response.json();
         if (data.success) {
-          login({ username: formData.username, email: formData.username });
+          login({ username: formData.username, email: formData.username }); // Use login function from useAuth
           navigate('/');
         } else {
           setErrors({ form: data.message });
