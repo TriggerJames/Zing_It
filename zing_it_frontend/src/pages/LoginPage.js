@@ -46,25 +46,28 @@ function LoginPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newErrors = validateForm();
-
+  
     if (Object.keys(newErrors).length === 0) {
       try {
-        // Check for test login
-        if (process.env.NODE_ENV === 'development' &&
-            formData.username === 'testuser' &&
-            formData.password === 'Test123!') {
-          // Perform test login
-          login({ username: 'testuser', email: 'testuser@example.com' });
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: formData.username, // assuming username is email
+            password: formData.password,
+          }),
+        });
+        const data = await response.json();
+        if (data.success) {
+          login({ username: formData.username, email: formData.username });
           navigate('/');
-          return;
+        } else {
+          setErrors({ form: data.message });
         }
-
-        // Perform actual login logic here
-        // For now, we'll just simulate a successful login
-        login({ username: formData.username, email: `${formData.username}@example.com` });
-        navigate('/');
       } catch (error) {
-        setErrors({ form: 'Invalid username or password' });
+        setErrors({ form: 'An error occurred. Please try again.' });
       }
     } else {
       setErrors(newErrors);
