@@ -68,9 +68,9 @@ The app is built using a modern stack with real-time WebSocket communication.
 
 ## Contributing
 
-```text
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like
-```
+
++ Pull requests are welcome. For major changes, please open an issue first to discuss what you would like
+
 
 ## Authors
 
