@@ -1,12 +1,22 @@
 import mongoose from 'mongoose';
 
 const chatSchema = new mongoose.Schema({
-  members:
-    type: [
-      {type: mongoose.Schema.ObjectId, ref: 'users'}
+  type: {
+    type: String,
+    enum: ['private', 'group'],
+    required: true,
+  },
+  members: [
+      { type: mongoose.Schema.ObjectId,
+      ref: 'users'}
     ],
+    groupName: {
+      type: String,
+      required: function() {return this.type === 'group';}
+    },
   lastMessage: {
-    type: mongoose.Schema.Types.ObjectId, ref: 'messages'
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'messages'
   },
   unreadMessageCount: {
     type: Number,
