@@ -25,8 +25,7 @@ chatRouter.post('/start-chat', authMiddleware, async (req, res) => {
       }
     }
     // Create a new chat (private or group)
-    const chat = new Chat({ type, members, groupName: type === 'group' ?
-        groupName: undefined });
+    const chat = new Chat({ type, members, groupName: type });
     await chat.save();
 
     res.status(201).send({
@@ -44,7 +43,7 @@ chatRouter.post('/start-chat', authMiddleware, async (req, res) => {
 
 // Get All Chat for a User
 chatRouter.get('/get-user-chat', authMiddleware, async (req, res) => {
-  const UserId = req.body.userId;
+  const userId = req.body.userId;
 
   try {
     const chats = await Chat.find({ members: userId })
