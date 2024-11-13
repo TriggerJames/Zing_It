@@ -21,7 +21,7 @@ app.use('/api/message', messageRouter);
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({
-    message: 'An erro occured',
+    message: 'An error occurred',
     success: false,
     error: err.message,
   });
