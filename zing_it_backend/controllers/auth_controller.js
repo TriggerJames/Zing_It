@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config({path: './config.env'});
+
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -40,7 +43,7 @@ authRouter.post('/signup', async (req, res) => {
 authRouter.post('/login', async (req, res) => {
   try {
     //check if user exits
-    const user = await User.findOne({email: req.body.email});
+    const user = await User.findOne({email:req.body.email}).select('+password');
     if (!user) {
       return res.status(404).send({
         message: 'User does not Exit',
@@ -55,6 +58,7 @@ authRouter.post('/login', async (req, res) => {
         success: false
       });
     }
+
     //authenticate with jwt
     const token = jwt.sign({userId: user._id}, process.env.SECRET_KEY, {expiresIn: '1d'});
 
