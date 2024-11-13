@@ -25,7 +25,10 @@ chatRouter.post('/start-chat', authMiddleware, async (req, res) => {
       }
     }
     // Create a new chat (private or group)
-    const chat = new Chat({ type, members, groupName: type });
+<<<<<<< HEAD
+=======
+    const chat = new Chat({ type, members, groupName });
+>>>>>>> 43010a0b2e145590b4925427063ff02784cfce85
     await chat.save();
 
     res.status(201).send({
