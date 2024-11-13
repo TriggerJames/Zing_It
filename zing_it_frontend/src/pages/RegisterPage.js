@@ -78,7 +78,7 @@ function RegisterPage() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await fetch('http://localhost:5000/api/auth/signup', {
+        const response = await fetch('http://localhost:3000/api/auth/signup', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ function RegisterPage() {
   };
 
   const handleGoogleSignup = () => {
-    // TODO: Implement Google signup logic
+    // Dummy function for Google signup
     console.log('Google signup clicked');
   };
 
