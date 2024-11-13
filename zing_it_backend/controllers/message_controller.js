@@ -48,6 +48,6 @@ messageRouter.get('/get-all-messages/:chatRoomId', authMiddleware, async (res, r
       success: false,
     });
   }
+});
 
 export default messageRouter;
-});

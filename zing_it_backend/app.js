@@ -2,7 +2,7 @@ import express from 'express';
 import authRouter from './controllers/auth_controller.js';
 import userRouter from './controllers/user_controller.js';
 import chatRouter from './controllers/chat_controller.js';
-import messageRouter from './controllers/messages_controller.js';
+import messageRouter from './controllers/message_controller.js';
 import cors from 'cors';
 
 const app = express();
