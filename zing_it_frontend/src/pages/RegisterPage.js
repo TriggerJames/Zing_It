@@ -78,7 +78,7 @@ function RegisterPage() {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const response = await fetch('http://localhost:3000/api/auth/signup', {
+        const response = await fetch('http://localhost:3001/api/auth/signup', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -95,7 +95,7 @@ function RegisterPage() {
         if (data.success) {
           // Automatically log in the user after successful registration
           login({ username: formData.username, email: formData.email });
-          navigate('/');
+          navigate('/rooms'); // Redirect to RoomsPage
         } else {
           setErrors({ form: data.message });
         }
@@ -131,6 +131,7 @@ function RegisterPage() {
           <FontAwesomeIcon icon={faGoogle} />
           <span>Sign up with Google</span>
         </button>
+        
         <button 
           type="button" 
           className="social-auth-button facebook"
@@ -141,91 +142,71 @@ function RegisterPage() {
         </button>
       </div>
 
-      <div className="auth-separator">
-        <span>or</span>
-      </div>
+      {/* Error Message */}
+      {errors.form && <div className=" error-message">{errors.form}</div>}
 
-      <form onSubmit={handleSubmit} className="auth-form">
-        <div className=" form-group">
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            className={errors.username ? 'error' : ''}
-          />
-          {errors.username && <span className="error-message">{errors.username}</span>}
-        </div>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <input 
+          type="text" 
+          name="username" 
+          placeholder="Username" 
+          value={formData.username} 
+          onChange={handleChange} 
+        />
+        {errors.username && <div className="error-message">{errors.username}</div>}
 
-        <div className="form-group">
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            value={formData.firstName}
-            onChange={handleChange}
-            className={errors.firstName ? 'error' : ''}
-          />
-          {errors.firstName && <span className="error-message">{errors.firstName}</span>}
-        </div>
+        <input 
+          type="text" 
+          name="firstName" 
+          placeholder="First Name" 
+          value={formData.firstName} 
+          onChange={handleChange} 
+        />
+        {errors.firstName && <div className="error-message">{errors.firstName}</div>}
 
-        <div className="form-group">
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            value={formData.lastName}
-            onChange={handleChange}
-            className={errors.lastName ? 'error' : ''}
-          />
-          {errors.lastName && <span className="error-message">{errors.lastName}</span>}
-        </div>
+        <input 
+          type="text" 
+          name="lastName" 
+          placeholder="Last Name" 
+          value={formData.lastName} 
+          onChange={handleChange} 
+        />
+        {errors.lastName && <div className="error-message">{errors.lastName}</div>}
 
-        <div className="form-group">
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
-            className={errors.email ? 'error' : ''}
-          />
-          {errors.email && <span className="error-message">{errors.email}</span>}
-        </div>
+        <input 
+          type="email" 
+          name="email" 
+          placeholder="Email" 
+          value={formData.email} 
+          onChange={handleChange} 
+        />
+        {errors.email && <div className="error-message">{errors.email}</div>}
 
-        <div className="form-group">
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            className={errors.password ? 'error' : ''}
-          />
-          {errors.password && <span className="error-message">{errors.password}</span>}
-        </div>
+        <input 
+          type="password" 
+          name="password" 
+          placeholder="Password" 
+          value={formData.password} 
+          onChange={handleChange} 
+        />
+        {errors.password && <div className="error-message">{errors.password}</div>}
 
-        <div className="form-group">
-          <input
-            type="password"
-            name="confirmPassword"
-            placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            className={errors.confirmPassword ? 'error' : ''}
-          />
-          {errors.confirmPassword && <span className="error-message">{errors.confirmPassword}</span>}
-        </div>
+        <input 
+          type="password" 
+          name="confirmPassword" 
+          placeholder="Confirm Password" 
+          value={formData.confirmPassword} 
+          onChange={handleChange} 
+        />
+        {errors.confirmPassword && <div className="error-message">{errors.confirmPassword}</div>}
 
-        <button type="submit" className="auth-button">
-          Register
-        </button>
+        <button type="submit" className="auth-button">Register</button>
       </form>
 
-      <p className="auth-footer">
-        Already have an account? <Link to="/login">Login here</Link>
-      </p>
+      <div className="auth-separator">or</div>
+      <div className="auth-footer">
+        Already have an account? <Link to="/login">Log in</Link>
+      </div>
     </div>
   );
 }
